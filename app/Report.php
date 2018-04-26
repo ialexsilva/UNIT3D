@@ -29,11 +29,6 @@ class Report extends Model
      */
     protected $guarded = ['id'];
 
-    public function torrent()
-    {
-        return $this->belongsTo(Torrent::class, 'torrent_id');
-    }
-
     public function reporter()
     {
         return $this->belongsTo(User::class, 'reporter_id')->withDefault([

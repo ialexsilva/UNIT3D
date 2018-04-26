@@ -25,36 +25,22 @@ class ReportController extends Controller
      */
     private $report;
 
-    /**
-     * @var Torrent
-     */
-    private $torrent;
-
-    public function __construct(Report $report, Torrent $torrent)
+    public function __construct(Report $report)
     {
         $this->report = $report;
-        $this->torrent = $torrent;
     }
 
     public function postReport(Request $request)
     {
-        $torrent = $this->torrent->find($request->get('torrent_id'));
-        $reported_by = auth()->user();
-        $reported_user = $torrent->user;
-
         $this->report->create([
             'type' => $request->get('type'),
-            'torrent_id' => $torrent->id,
-            'reporter_id' => $reported_by->id,
-            'reported_user' => $reported_user->id,
-            'title' => $torrent->name,
+            'reporter_id' => $request->get('reporter'),
+            'reported_user' => $request->get('reported'),
+            'subject' => $request->get('subject'),
             'message' => $request->get('message'),
             'solved' => 0
         ]);
 
-        // Activity Log
-        \LogActivity::addToLog("Member {$reported_by->username} has made a new {$request->get('type')} report.");
-
-        return redirect()->route('home')->with(Toastr::success('Your report has been successfully sent', 'Yay!', ['options']));
+        return response(['message' => 'Your report has been successfully submitted!'], 201);
     }
 }

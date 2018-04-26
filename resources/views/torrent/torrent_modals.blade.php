@@ -1,48 +1,10 @@
 {{-- Report Modal --}}
-<div class="modal fade" id="modal_torrent_report" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <meta charset="utf-8">
-            <title>{{ trans('common.report') }} {{ strtolower(trans('torrent.torrent')) }}: {{ $torrent->name }}</title>
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}"><span
-                            aria-hidden="true">×</span></button>
-                <h4 class="modal-title"
-                    id="myModalLabel">{{ trans('common.report') }} {{ strtolower(trans('torrent.torrent')) }}
-                    : {{ $torrent->name }}</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" role="form" method="POST" action="{{ route('postReport') }}">
-                    <div class="form-group">
-                        {{ csrf_field() }}
-                        <input id="type" name="type" type="hidden" value="Torrent">
-                        <label for="file_name" class="col-sm-2 control-label">{{ trans('torrent.torrent') }}</label>
-                        <div class="col-sm-10">
-                            <input type="hidden" name="torrent_id" value="{{ $torrent->id }}">
-                            <p class="form-control-static">{{ $torrent->name }}</p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="report_reason" class="col-sm-2 control-label">{{ trans('common.reason') }}</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" rows="5" name="message" cols="50" id="message"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-10 col-sm-offset-2">
-                            <input class="btn btn-danger" type="submit" value="{{ trans('common.report') }}">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-sm btn-default" type="button"
-                    data-dismiss="modal">{{ trans('common.close') }}</button>
-        </div>
-    </div>
-</div>
-</div>
+<report-modal report-type="Torrent"
+              :reported-by="{{auth()->user()->id}}"
+              :reported-user="{{$torrent->user->id}}"
+              subject="{{$torrent->name}}">
+
+</report-modal>
 
 {{-- Delete Modal --}}
 <div class="modal fade" id="modal_torrent_delete" tabindex="-1" role="dialog" aria-hidden="true">
