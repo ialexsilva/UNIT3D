@@ -17,6 +17,7 @@ window.Vue = require('vue')
 Vue.component('example', require('./components/Example.vue'))
 Vue.component('version', require('./components/Version.vue'))
 Vue.component('bookmark', require('./components/BookmarkButton.vue'))
+Vue.component('freeleechpool', require('./components/pool/FreeleechPool.vue'))
 
 const app = new Vue({
     el: '#app'
