@@ -15,7 +15,7 @@
         </a>
     </li>
     <li>
-        <a href="{{ url('add_request') }}" itemprop="url" class="l-breadcrumb-item-link">
+        <a href="{{ url('add_request_form') }}" itemprop="url" class="l-breadcrumb-item-link">
             <span itemprop="title" class="l-breadcrumb-item-link-title">{{ trans('request.add-request') }}</span>
         </a>
     </li>
@@ -114,9 +114,9 @@
 
 @section('javascripts')
     <script>
-        $(document).ready(function () {
-            var wbbOpt = {}
-            $("#request-form-description").wysibb(wbbOpt);
-        });
+      $(document).ready(function () {
+        $('#request-form-description').wysibb({})
+        emoji.textcomplete()
+      })
     </script>
 @endsection

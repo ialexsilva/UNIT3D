@@ -10,6 +10,16 @@ let mix = require('laravel-mix')
  */
 
 mix
+  .version()
+
+  .webpackConfig({
+    module: {
+      // configuration regarding modules
+      loaders: [
+        { test: /\.js$/, loader: 'babel', query: {compact: false} }
+      ]
+    }
+  })
   /*
    * Sourced asset dependencies via node_modules and JS bootstrapping
    */
@@ -58,28 +68,17 @@ mix
    */
   .sass('resources/assets/sass/main/login.scss', 'public/css/main/login.css')
   .sass('resources/assets/sass/main/twostep.scss', 'public/css/main/twostep.css')
-  .copy('resources/assets/js/unit3d/twostep.js', 'public/js')
-
-  /*
-   * shout.js
-   *
-   * We simply copy this file to the public path as currently we will link it in the home view separately from the
-   * rest of the JS.
-   *
-   * Note: This will eventually be reworked into a VueJS component.
-   */
-  .copy('resources/assets/js/unit3d/shout.js', 'public/js')
+  .babel('resources/assets/js/unit3d/twostep.js', 'public/js/twostep.js')
 
   /*
    * Here we take all these scripts and compile them into a single 'unit3d.js' file that will be loaded after 'app.js'
    *
    * Note: The order of this array will matter, no different then linking these assets manually in the html
    */
-  .scripts([
-  'resources/assets/js/unit3d/hoe.js',
-  'resources/assets/js/unit3d/vendor/livicons.js',
-  'resources/assets/js/unit3d/emoji.js',
-  'resources/assets/js/unit3d/blutopia.js'
+  .babel([
+    'resources/assets/js/unit3d/hoe.js',
+    'resources/assets/js/unit3d/vendor/livicons.js',
+    'resources/assets/js/unit3d/blutopia.js'
   ], 'public/js/unit3d.js')
 
 // Full API

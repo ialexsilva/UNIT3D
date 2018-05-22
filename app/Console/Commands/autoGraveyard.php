@@ -12,16 +12,30 @@
 
 namespace App\Console\Commands;
 
+use App\Repositories\ChatRepository;
 use Illuminate\Console\Command;
 use App\Torrent;
 use App\History;
 use App\Graveyard;
 use App\PrivateMessage;
 use App\User;
-use App\Shoutbox;
+use App\Message;
 
 class autoGraveyard extends Command
 {
+
+    /**
+     * @var ChatRepository
+     */
+    private $chat;
+
+    public function __construct(ChatRepository $chat)
+    {
+        parent::__construct();
+
+        $this->chat = $chat;
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -59,8 +73,10 @@ class autoGraveyard extends Command
 
                 // Auto Shout
                 $appurl = config('app.url');
-                Shoutbox::create(['user' => "1", 'mentions' => "1", 'message' => "Ladies and Gents, [url={$appurl}/" . $user->username . "." . $user->id . "]" . $user->username . "[/url] has succesfully ressurected [url={$appurl}/torrents/" . $torrent->slug . "." . $torrent->id . "]" . $torrent->name . "[/url]. :zombie:"]);
-                cache()->forget('shoutbox_messages');
+
+                $this->chat->systemMessage(
+                    "Ladies and Gents, [url={$appurl}/{$user->username}.{$user->id}]{$user->username}[/url] has succesfully ressurected [url={$appurl}/torrents/{$torrent->slug}.{$torrent->id}]{$torrent->name}[/url]. :zombie:"
+                );
 
                 // PM User
                 PrivateMessage::create(['sender_id' => "1", 'reciever_id' => $user->id, 'subject' => "Successful Graveyard Ressurection", 'message' => "You have successfully ressurected [url={$appurl}/torrents/" . $torrent->slug . "." . $torrent->id . "]" . $torrent->name . "[/url] :zombie: ! Thank you for bringing a torrent back from the dead! Enjoy the freeleech tokens!

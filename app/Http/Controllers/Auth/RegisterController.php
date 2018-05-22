@@ -13,6 +13,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\ChatRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -21,7 +22,7 @@ use App\Http\Requests\ValidateSecretRequest;
 use App\Jobs\SendActivationMail;
 use App\UserActivation;
 use App\User;
-use App\Shoutbox;
+use App\Message;
 use App\PrivateMessage;
 use App\Group;
 use App\Invite;
@@ -32,6 +33,13 @@ use Cache;
 
 class RegisterController extends Controller
 {
+    private $chat;
+
+    public function __construct(ChatRepository $chat)
+    {
+        $this->chat = $chat;
+    }
+
     public function register(Request $request, $code = null)
     {
         $current = Carbon::now();
@@ -88,10 +96,11 @@ class RegisterController extends Controller
                 ]);
                 $this->dispatch(new SendActivationMail($user, $token));
 
-                $appurl = config('app.url');
-                // Post To Shoutbox
-                Shoutbox::create(['user' => "1", 'mentions' => "1", 'message' => "Welcome [url={$appurl}/" . $user->username . "." . $user->id . "]" . $user->username . "[/url] hope you enjoy the community :rocket:"]);
-                Cache::forget('shoutbox_messages');
+                $profile_url = hrefProfile($user);
+
+                $this->chat->systemMessage(
+                    "Welcome [url={$profile_url}]{$user->username}[/url] hope you enjoy the community :rocket:"
+                );
 
                 // Send Welcome PM
                 PrivateMessage::create(['sender_id' => "1", 'reciever_id' => $user->id, 'subject' => config('welcomepm.subject'), 'message' => config('welcomepm.message')]);

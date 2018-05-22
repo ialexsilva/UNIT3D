@@ -12,6 +12,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
+use App\Repositories\ChatRepository;
 use App\Repositories\TaggedUserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +21,7 @@ use App\Forum;
 use App\Post;
 use App\Topic;
 use App\User;
-use App\Shoutbox;
+use App\Message;
 use App\Like;
 use App\Achievements\UserMadeFirstPost;
 use App\Achievements\UserMade25Posts;
@@ -45,9 +47,15 @@ class ForumController extends Controller
      */
     private $tag;
 
-    public function __construct(TaggedUserRepository $tag)
+    /**
+     * @var ChatRepository
+     */
+    private $chat;
+
+    public function __construct(TaggedUserRepository $tag, ChatRepository $chat)
     {
         $this->tag = $tag;
+        $this->chat = $chat;
     }
 
     /**
@@ -264,10 +272,12 @@ class ForumController extends Controller
         // Find the user who initated the topic
         $topicCreator = User::findOrFail($topic->first_post_user_id);
 
-        // Post To ShoutBox
+        // Post To Chatbox
         $appurl = config('app.url');
-        Shoutbox::create(['user' => "1", 'mentions' => "1", 'message' => "User [url={$appurl}/" . $user->username . "." . $user->id . "]" . $user->username . "[/url] has left a reply on topic [url={$appurl}/forums/topic/" . $topic->slug . "." . $topic->id . "?page={$post->getPageNumber()}#post-{$post->id}" . "]" . $topic->name . "[/url]"]);
-        cache()->forget('shoutbox_messages');
+        $postUrl = "{$appurl}/forums/topic/{$topic->slug}.{$topic->id}?page={$post->getPageNumber()}#post-{$post->id}";
+        $profileUrl = "{$appurl}/{$user->username}.{$user->id}";
+
+        $this->chat->systemMessage("[url=$profileUrl]{$user->username}[/url] has left a reply on topic [url={$postUrl}]{$topic->name}[/url]");
 
         // Mail Topic Creator Of New Reply
         if ($post->user_id != $topic->first_post_user_id) {
@@ -358,8 +368,10 @@ class ForumController extends Controller
 
                     // Post To ShoutBox
                     $appurl = config('app.url');
-                    Shoutbox::create(['user' => "1", 'mentions' => "1", 'message' => "User [url={$appurl}/" . $user->username . "." . $user->id . "]" . $user->username . "[/url] has created a new topic [url={$appurl}/forums/topic/" . $topic->slug . "." . $topic->id . "]" . $topic->name . "[/url]"]);
-                    cache()->forget('shoutbox_messages');
+                    $topicUrl = "{$appurl}/forums/topic/{$topic->slug}.{$topic->id}";
+                    $profileUrl = "{$appurl}/{$user->username}.{$user->id}";
+
+                    $this->chat->systemMessage("[url={$profileUrl}]{$user->username}[/url] has created a new topic [url={$topicUrl}]{$topic->name}[/url]");
 
                     //Achievements
                     $user->unlock(new UserMadeFirstPost(), 1);

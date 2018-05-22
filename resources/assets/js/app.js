@@ -14,11 +14,16 @@ window.Vue = require('vue')
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'))
-Vue.component('version', require('./components/Version.vue'))
-Vue.component('bookmark', require('./components/BookmarkButton.vue'))
+/* Plugins*/
+import VTooltip from 'v-tooltip'
+Vue.use(VTooltip)
+
+/* Components */
+Vue.component('version', require('./components/Version'))
+Vue.component('chatbox', require('./components/chat/Chatbox'))
+Vue.component('bookmark', require('./components/BookmarkButton'))
 Vue.component('freeleechpool', require('./components/pool/FreeleechPool.vue'))
 
 const app = new Vue({
-    el: '#app'
+  el: '#app'
 })

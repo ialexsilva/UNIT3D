@@ -22,12 +22,12 @@
 @endsection
 
 @section('content')
-    @if($user->can_upload == 0)
+    @if($user->can_upload == 0 || $user->group->can_upload == 0)
         <div class="container">
             <div class="jumbotron shadowed">
                 <div class="container">
                     <h1 class="mt-5 text-center">
-                        <i class="fa fa-times text-danger"></i> Error: Your Upload Rights Have Been Disabled
+                        <i class="fa fa-times text-danger"></i> Error: Your Upload Rights Are Disabled!
                     </h1>
                     <div class="separator"></div>
                     <p class="text-center">If You Feel This Is In Error, Please Contact Staff!</p>
@@ -45,7 +45,8 @@
             </div>
             <br>
             <div class="text-center">
-                <p class="text-success">Having Trouble? See Our Guide <a href="{{ url('p/upload-guide.5') }}">HERE</a></p>
+                <p class="text-success">Having Trouble? See Our Guide <a href="{{ url('p/upload-guide.5') }}">HERE</a>
+                </p>
                 <p class="text-danger">TMDB and IMDB is required for all uploads! It is used to grab
                     Posters/Backdrops and ExtraInfo!</p>
             </div>
@@ -163,63 +164,63 @@
 
 @section('javascripts')
     <script>
-        $(document).ready(function () {
-            var wbbOpt = {}
-            $("#upload-form-description").wysibb(wbbOpt);
-        });
+      $(document).ready(function () {
+        $('#upload-form-description').wysibb({})
+        emoji.textcomplete()
+      })
     </script>
 
     <script type="text/javascript">
-        $('#add').on('click', function (e) {
-            e.preventDefault();
-            var optionHTML = '<div class="form-group"><label for="mediainfo">MediaInfo Parser</label><textarea rows="2" class="form-control" name="mediainfo" cols="50" id="mediainfo" placeholder="Paste MediaInfo Dump Here"></textarea></div>';
-            $('.parser').append(optionHTML);
-        });
+      $('#add').on('click', function (e) {
+        e.preventDefault()
+        var optionHTML = '<div class="form-group"><label for="mediainfo">MediaInfo Parser</label><textarea rows="2" class="form-control" name="mediainfo" cols="50" id="mediainfo" placeholder="Paste MediaInfo Dump Here"></textarea></div>'
+        $('.parser').append(optionHTML)
+      })
     </script>
     <script>
-        function updateTorrentName() {
-            let name = document.querySelector("#title");
-            let torrent = document.querySelector("#torrent");
-            let fileEndings = [".mkv.torrent", ".torrent"];
-            let allowed = ["1.0", "2.0", "5.1", "7.1", "H.264"];
-            let separators = ["-", " ", "."];
-            if (name !== null && torrent !== null) {
-                let value = torrent.value.split('\\').pop().split('/').pop();
-                fileEndings.forEach(function (e) {
-                    if (value.endsWith(e)) {
-                        value = value.substr(0, value.length - e.length);
-                    }
-                });
-                value = value.replace(/\./g, " ");
-                allowed.forEach(function (a) {
-                    search = a.replace(/\./g, " ");
-                    let replaceIndexes = [];
-                    let pos = value.indexOf(search);
-                    while (pos !== -1) {
-                        let start = pos > 0 ? value[pos - 1] : " ";
-                        let end = pos + search.length < value.length ? value[pos + search.length] : " ";
-                        if (separators.includes(start) && separators.includes(end)) {
-                            replaceIndexes.push(pos);
-                        }
-                        pos = value.indexOf(search, pos + search.length);
-                    }
-                    newValue = "";
-                    ignore = 0;
-                    for (let i = 0; i < value.length; ++i) {
-                        if (ignore > 0) {
-                            --ignore;
-                        } else if (replaceIndexes.length > 0 && replaceIndexes[0] == i) {
-                            replaceIndexes.shift();
-                            newValue += a;
-                            ignore = a.length - 1;
-                        } else {
-                            newValue += value[i];
-                        }
-                    }
-                    value = newValue;
-                })
-                name.value = value;
+      function updateTorrentName () {
+        let name = document.querySelector('#title')
+        let torrent = document.querySelector('#torrent')
+        let fileEndings = ['.mkv.torrent', '.torrent']
+        let allowed = ['1.0', '2.0', '5.1', '7.1', 'H.264']
+        let separators = ['-', ' ', '.']
+        if (name !== null && torrent !== null) {
+          let value = torrent.value.split('\\').pop().split('/').pop()
+          fileEndings.forEach(function (e) {
+            if (value.endsWith(e)) {
+              value = value.substr(0, value.length - e.length)
             }
+          })
+          value = value.replace(/\./g, ' ')
+          allowed.forEach(function (a) {
+            search = a.replace(/\./g, ' ')
+            let replaceIndexes = []
+            let pos = value.indexOf(search)
+            while (pos !== -1) {
+              let start = pos > 0 ? value[pos - 1] : ' '
+              let end = pos + search.length < value.length ? value[pos + search.length] : ' '
+              if (separators.includes(start) && separators.includes(end)) {
+                replaceIndexes.push(pos)
+              }
+              pos = value.indexOf(search, pos + search.length)
+            }
+            newValue = ''
+            ignore = 0
+            for (let i = 0; i < value.length; ++i) {
+              if (ignore > 0) {
+                --ignore
+              } else if (replaceIndexes.length > 0 && replaceIndexes[0] == i) {
+                replaceIndexes.shift()
+                newValue += a
+                ignore = a.length - 1
+              } else {
+                newValue += value[i]
+              }
+            }
+            value = newValue
+          })
+          name.value = value
         }
+      }
     </script>
 @endsection

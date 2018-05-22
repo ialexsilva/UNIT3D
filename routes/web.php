@@ -47,7 +47,7 @@ Route::group(['middleware' => 'language'], function () {
 
         // Forgot Username Routes
         Route::get('username/reminder', 'Auth\ForgotUsernameController@showForgotUsernameForm')->name('username.request');
-        Route::post('username/reminder', 'Auth\ForgotUsernameController@sendUserameReminder')->name('username.email');
+        Route::post('username/reminder', 'Auth\ForgotUsernameController@sendUsernameReminder')->name('username.email');
     });
 
     Route::group(['before' => 'auth'], function () {
@@ -81,13 +81,13 @@ Route::group(['middleware' => 'language'], function () {
 
         // Bonus System
         Route::get('/bonus', 'BonusController@bonus')->name('bonus');
-        Route::post('/bonusexchange/{id}', 'BonusController@exchange')->name('bonusexchange');
+        Route::get('/bonusexchange/{id}', 'BonusController@exchange')->name('bonusexchange');
         Route::post('/bongift', 'BonusController@gift')->name('bongift');
 
         // Bookmarks
         Route::get('/bookmarks', 'BookmarkController@bookmarks')->name('bookmarks');
-        Route::post('/torrents/bookmark/{id}', 'TorrentController@bookmark')->name('bookmark');
-        Route::post('/torrents/unbookmark/{id}', 'TorrentController@unBookmark')->name('unbookmark');
+        Route::get('/torrents/bookmark/{id}', 'TorrentController@bookmark')->name('bookmark');
+        Route::get('/torrents/unbookmark/{id}', 'TorrentController@unBookmark')->name('unbookmark');
 
         // User/Torrent Report
         Route::post('/report', 'ReportController@postReport')->name('postReport');
@@ -130,7 +130,7 @@ Route::group(['middleware' => 'language'], function () {
         Route::get('/comment/thanks/{id}', 'CommentController@quickthanks')->name('comment_thanks');
         Route::post('/comment/request/{id}', 'CommentController@request')->name('comment_request');
         Route::post('/comment/edit/{comment_id}', 'CommentController@editComment')->name('comment_edit');
-        Route::post('/comment/delete/{comment_id}', 'CommentController@deleteComment')->name('comment_delete');
+        Route::get('/comment/delete/{comment_id}', 'CommentController@deleteComment')->name('comment_delete');
 
         //Extra-Stats
         Route::get('/stats', 'StatsController@index')->name('stats');
@@ -161,7 +161,7 @@ Route::group(['middleware' => 'language'], function () {
         Route::get('/{username}.{id}/message/{pmid}', 'PrivateMessageController@getPrivateMessageById')->name('message');
         Route::get('/{username}.{id}/outbox', 'PrivateMessageController@getPrivateMessagesSent')->name('outbox');
         Route::get('/{username}.{id}/create', 'PrivateMessageController@makePrivateMessage')->name('create');
-        Route::post('/{username}.{id}/mark-all-read', 'PrivateMessageController@markAllAsRead')->name('mark-all-read');
+        Route::get('/{username}.{id}/mark-all-read', 'PrivateMessageController@markAllAsRead')->name('mark-all-read');
         Route::post('/send-private-message', 'PrivateMessageController@sendPrivateMessage')->name('send-pm');
         Route::post('/reply-private-message/{pmid}', 'PrivateMessageController@replyPrivateMessage')->name('reply-pm');
         Route::post('/deletePM/{pmid}', 'PrivateMessageController@deletePrivateMessage')->name('delete-pm');
@@ -192,7 +192,7 @@ Route::group(['middleware' => 'language'], function () {
         Route::post('/upload', 'TorrentController@upload')->name('upload');
         Route::get('/download_check/{slug}.{id}', 'TorrentController@downloadCheck')->name('download_check');
         Route::get('/download/{slug}.{id}', 'TorrentController@download')->name('download');
-        Route::get('/poster', 'TorrentController@poster')->name('poster');
+        Route::get('/torrents/cards', 'TorrentController@cardsLayout')->name('cards');
         Route::post('/torrents/delete', 'TorrentController@deleteTorrent')->name('delete');
         Route::get('/torrents/{slug}.{id}/edit', 'TorrentController@editForm')->name('edit_form');
         Route::post('/torrents/{slug}.{id}/edit', 'TorrentController@edit')->name('edit');
@@ -281,11 +281,12 @@ Route::group(['middleware' => 'language'], function () {
     | ShoutBox Routes Group (when authorized)
     |------------------------------------------
     */
-    Route::group(['prefix' => 'shoutbox', 'middleware' => ['auth', 'twostep', 'online', 'banned', 'active', 'private']], function () {
-        Route::get('/', 'HomeController@home')->name('shoutbox-home');
-        Route::get('/messages/{after?}', 'ShoutboxController@pluck')->name('shoutbox-fetch');
-        Route::post('/send', 'ShoutboxController@send')->name('shoutbox-send');
-        Route::get('/delete/{id}', 'ShoutboxController@deleteShout')->name('shout-delete');
+    Route::group(['prefix' => 'chatbox', 'middleware' => ['auth', 'twostep', 'online', 'banned', 'active', 'private']], function () {
+        Route::get('/', 'ChatController@index');
+        Route::get('chatrooms', 'ChatController@fetchChatrooms');
+        Route::post('change-chatroom', 'ChatController@changeChatroom');
+        Route::get('messages', 'ChatController@fetchMessages');
+        Route::post('messages', 'ChatController@sendMessage');
     });
 
     /*
