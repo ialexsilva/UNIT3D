@@ -13,12 +13,12 @@ class CreatePoolSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('poolSettings', function (Blueprint $table) {
+        Schema::create('pool_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('pot')->default(100.00);
+            $table->double('pot',12,2)->default(100.00);
             $table->boolean('complete')->default(false);
             $table->timestamp('creation_date')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('completion_date');
+            $table->timestamp('completion_date')->nullable(true);
         });
     }
 

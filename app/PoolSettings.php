@@ -29,11 +29,15 @@ class PoolSettings extends Model
     protected $dates = ['completion_date'];
 
     /**
+     * This model has custom timestamp fields and the default should not be used
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * Mass assignment fields
      */
-    protected $fillable = [
-        'pot'
-    ];
+    protected $fillable = ['pot'];
 
     /**
      * Each pool has many transactions

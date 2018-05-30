@@ -11,6 +11,7 @@
  */
 
 use Illuminate\Database\Seeder;
+use App\PoolSettings;
 
 class PoolSettingsTableSeeder extends Seeder
 {
@@ -22,11 +23,10 @@ class PoolSettingsTableSeeder extends Seeder
      */
     public function run()
     {
-        \DB::table('types')->delete();
-
-        \DB::table('types')->insert([
+        PoolSettings::create([
             'id' => 0,
-            'pot' => 500.0,
+            'pot' => 500,
+
         ]);
     }
 }

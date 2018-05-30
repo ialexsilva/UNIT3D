@@ -19,9 +19,15 @@ use Illuminate\Database\Eloquent\Model;
 class PoolTransactions extends Model
 {
     /**
-     * customised name for created_at
+     * Customised name for created_at
      */
     public const CREATED_AT = "creation_date";
+
+    /**
+     * This model has custom timestamp fields and the default should not be used
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * has one Parent PoolTransactions
