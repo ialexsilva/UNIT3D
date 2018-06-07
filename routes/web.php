@@ -83,6 +83,7 @@ Route::group(['middleware' => 'language'], function () {
         Route::get('/bonus', 'BonusController@bonus')->name('bonus');
         Route::get('/bonusexchange/{id}', 'BonusController@exchange')->name('bonusexchange');
         Route::post('/bongift', 'BonusController@gift')->name('bongift');
+        Route::get("/bonus_pool","PoolController@getPoolView")->name("pool");
 
         // Bookmarks
         Route::get('/bookmarks', 'BookmarkController@bookmarks')->name('bookmarks');

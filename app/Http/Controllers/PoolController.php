@@ -12,7 +12,7 @@
  *
  */
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 class PoolController extends Controller
 {
@@ -22,5 +22,9 @@ class PoolController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function getPoolView(){
+        return view("bonus.pool");
     }
 }
