@@ -19,7 +19,6 @@ use \Toastr;
 
 class CategoryController extends Controller
 {
-
     /**
      * Get The Categories
      *
@@ -45,7 +44,7 @@ class CategoryController extends Controller
     /**
      * Add A Category
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\RedirectResponse
      */
     public function add(Request $request)
@@ -92,7 +91,7 @@ class CategoryController extends Controller
     /**
      * Edit A Category
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @param $id
      * @return Illuminate\Http\RedirectResponse
@@ -136,6 +135,6 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
         return redirect()->route('staff_category_index')
-            ->with(Toastr::success('Category Sucessfully Deleted', 'Yay!', ['options']));
+            ->with(Toastr::success('Category Successfully Deleted', 'Yay!', ['options']));
     }
 }

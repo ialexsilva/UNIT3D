@@ -19,7 +19,6 @@ use \Toastr;
 
 class GiftController extends Controller
 {
-
     /**
      * Send Gift Form
      *
@@ -28,13 +27,14 @@ class GiftController extends Controller
     public function index()
     {
         $users = User::oldest('username')->get();
-        return view('Staff.gift.index', compact('users'));
+
+        return view('Staff.gift.index', ['users' => $users]);
     }
 
     /**
      * Send The Gift
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\RedirectResponse
      */
     public function gift(Request $request)
@@ -46,12 +46,12 @@ class GiftController extends Controller
         $invites = $request->input('invites');
         $fl_tokens = $request->input('fl_tokens');
 
-            $v = validator($request->all(), [
-                'username' => "required|exists:users,username|max:180",
-                'seedbonus' => "required|numeric|min:0",
-                'invites' => "required|numeric|min:0",
-                'fl_tokens' => "required|numeric|min:0"
-            ]);
+        $v = validator($request->all(), [
+            'username' => "required|exists:users,username|max:180",
+            'seedbonus' => "required|numeric|min:0",
+            'invites' => "required|numeric|min:0",
+            'fl_tokens' => "required|numeric|min:0"
+        ]);
 
         if ($v->fails()) {
             return redirect()->route('systemGift')
@@ -61,7 +61,7 @@ class GiftController extends Controller
 
             if (!$recipient) {
                 return redirect()->route('systemGift')
-                    ->with(Toastr::error('Unable to find specified user', 'Whoops!', ['options']));
+                    ->with(Toastr::error('Unable To Find Specified User', 'Whoops!', ['options']));
             }
 
             $recipient->seedbonus += $seedbonus;

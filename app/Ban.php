@@ -14,22 +14,29 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Ban.
- */
 class Ban extends Model
 {
+    /**
+     * Belongs To A User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function banneduser()
     {
-        return $this->belongsTo(\App\User::class, "owned_by")->withDefault([
+        return $this->belongsTo(User::class, "owned_by")->withDefault([
             'username' => 'System',
             'id' => '1'
         ]);
     }
 
+    /**
+     * Belongs To A User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function staffuser()
     {
-        return $this->belongsTo(\App\User::class, "created_by")->withDefault([
+        return $this->belongsTo(User::class, "created_by")->withDefault([
             'username' => 'System',
             'id' => '1'
         ]);

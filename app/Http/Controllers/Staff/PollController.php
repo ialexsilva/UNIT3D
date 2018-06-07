@@ -17,14 +17,15 @@ use App\Repositories\ChatRepository;
 use Illuminate\Http\Request;
 use App\Poll;
 use App\Option;
-use App\Message;
 use App\Http\Requests\StorePoll;
 use Cache;
 use \Toastr;
 
 class PollController extends Controller
 {
-
+    /**
+     * @var ChatRepository
+     */
     private $chat;
 
     public function __construct(ChatRepository $chat)
@@ -32,22 +33,34 @@ class PollController extends Controller
         $this->chat = $chat;
     }
 
+    /**
+     * Show All Polls
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function polls()
     {
         $polls = Poll::latest()->paginate(25);
-        return view('Staff.poll.polls', compact('polls'));
-    }
 
-    public function poll($id)
-    {
-        $poll = Poll::where('id', $id)->firstOrFail();
-        return view('Staff.poll.poll', compact('poll'));
+        return view('Staff.poll.polls', ['polls' => $polls]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show A Poll
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function poll($id)
+    {
+        $poll = Poll::where('id', $id)->firstOrFail();
+
+        return view('Staff.poll.poll', ['poll' => $poll]);
+    }
+
+    /**
+     * Poll Add Form
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -55,10 +68,10 @@ class PollController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add A Poll
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param StorePoll $request
+     * @return Illuminate\Http\RedirectResponse
      */
     public function store(StorePoll $request)
     {
@@ -84,6 +97,7 @@ class PollController extends Controller
             "A new poll has been created [url={$poll_url}]{$poll->title}[/url] vote on it now! :slight_smile:"
         );
 
-        return redirect('poll/' . $poll->slug)->with(Toastr::success('Your poll has been created.', 'Yay!', ['options']));
+        return redirect('poll/' . $poll->slug)
+            ->with(Toastr::success('Your poll has been created.', 'Yay!', ['options']));
     }
 }

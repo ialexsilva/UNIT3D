@@ -20,7 +20,6 @@ use \Toastr;
 
 class MassPMController extends Controller
 {
-
     /**
      * Mass PM Form
      *
@@ -34,7 +33,7 @@ class MassPMController extends Controller
     /**
      * Send The Mass PM
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\RedirectResponse
      */
     public function sendMassPM(Request $request)
@@ -61,7 +60,7 @@ class MassPMController extends Controller
                 $pm->sender_id = 1;
                 $pm->receiver_id = $user->id;
                 $pm->subject = $subject;
-                $pm->message =  $message;
+                $pm->message = $message;
                 $pm->save();
             }
 

@@ -21,7 +21,6 @@ use \Toastr;
 
 class GroupsController extends Controller
 {
-
     /**
      * Get All Groups
      *
@@ -45,9 +44,9 @@ class GroupsController extends Controller
     }
 
     /**
-     * Add Group
+     * Add A Group
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\RedirectResponse
      */
     public function add(Request $request)
@@ -82,7 +81,7 @@ class GroupsController extends Controller
         } else {
             $group->save();
 
-            foreach(Forum::all()->pluck('id') as $forum_id) {
+            foreach (Forum::all()->pluck('id') as $forum_id) {
                 $permission = new Permission();
                 $permission->forum_id = $forum_id;
                 $permission->group_id = $group->id;
@@ -113,9 +112,9 @@ class GroupsController extends Controller
     }
 
     /**
-     * Edit Group
+     * Edit A Group
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $group
      * @param $id
      * @return Illuminate\Http\RedirectResponse
